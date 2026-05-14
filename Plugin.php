@@ -4,7 +4,7 @@
  *
  * @package MaintenanceMode
  * @author I'm ZH
- * @version 1.0.4
+ * @version 1.1.0
  * @link http://imzh.cn/
  */
 
