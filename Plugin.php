@@ -1,11 +1,11 @@
 <?php
 /**
- * Typecho 站点维护插件（可自定义联系邮箱）
+ * Typecho 站点维护插件
  *
  * @package MaintenanceMode
- * @author I`M ZH
- * @version 1.0.0
- * @link https://imzh.cn/
+ * @author I'm ZH
+ * @version 1.0.4
+ * @link http://imzh.cn/
  */
 
 class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
@@ -37,13 +37,13 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
         // 获取自定义联系邮箱（如果没有设置则使用默认值）
         $contactEmail = !empty($pluginConfig->contactEmail) ? $pluginConfig->contactEmail : 'support@example.com';
 
-        // 输出美观的维护页面
+        // 输出美观的维护页面（动态时间由 JS 生成）
         echo self::getMaintenanceHtml($contactEmail);
         exit;
     }
 
     /**
-     * 生成美观的维护页面 HTML（内嵌样式，支持深色模式，动态邮箱）
+     * 生成美观的维护页面 HTML（内嵌样式，支持深色模式，动态邮箱，动态实时时钟）
      *
      * @param string $email 联系邮箱
      * @return string
@@ -184,8 +184,20 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
             transform: translateY(1px);
         }
 
+        /* 动态时间样式 */
+        .current-time {
+            font-size: 0.85rem;
+            color: #5b6e8c;
+            margin: 0.5rem 0 0.2rem;
+            letter-spacing: 0.3px;
+            background: rgba(0, 0, 0, 0.02);
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+        }
+
         .contact {
-            margin-top: 1.2rem;
+            margin-top: 1rem;
             font-size: 0.85rem;
             color: #5b6e8c;
             border-top: 1px solid #e9edf2;
@@ -224,6 +236,9 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
                 padding: 0.65rem 1.5rem;
                 font-size: 0.9rem;
             }
+            .current-time {
+                font-size: 0.75rem;
+            }
         }
 
         @media (prefers-color-scheme: dark) {
@@ -252,6 +267,10 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
             .refresh-btn:hover {
                 background: #475569;
             }
+            .current-time {
+                color: #9ca3af;
+                background: rgba(255, 255, 255, 0.03);
+            }
             .contact {
                 border-top-color: #334155;
                 color: #9ca3af;
@@ -266,6 +285,28 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
             }
         }
     </style>
+    <script>
+        // 动态实时时钟（每秒更新）
+        function updateClock() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var day = String(now.getDate()).padStart(2, '0');
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var seconds = String(now.getSeconds()).padStart(2, '0');
+            var dateTimeStr = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+            var timeElement = document.getElementById('liveClock');
+            if (timeElement) {
+                timeElement.textContent = dateTimeStr;
+            }
+        }
+        // 页面加载完成后立即显示并开始每秒更新
+        window.addEventListener('DOMContentLoaded', function() {
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
 </head>
 <body>
     <div class="maintenance-card">
@@ -290,6 +331,10 @@ class MaintenanceMode_Plugin implements Typecho_Plugin_Interface
         <button class="refresh-btn" onclick="window.location.reload();">
             🔄 刷新页面
         </button>
+        <!-- 动态实时时间显示，初始文本由 JS 填充 -->
+        <div class="current-time">
+            🕒 当前时间：<span id="liveClock">--:--:--</span>
+        </div>
         <div class="contact">
             📧 如有紧急事宜，请发送邮件至 <a href="mailto:{$emailSafe}">{$emailSafe}</a>
             <div class="small-note">
