@@ -6,6 +6,9 @@ _🛠️ Typecho 站点维护插件 🛠️_
 
 </div>
 
+## 插件截图
+<img src="https://github.com/user-attachments/assets/53b9299b-f27c-4e9b-a654-84be15f73868" style="width: auto; height: auto;" >
+
 ## 使用方法
 1.下载 **`Plugin.php`** 文件
 
