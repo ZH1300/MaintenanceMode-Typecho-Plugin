@@ -1,10 +1,10 @@
 <?php
 /**
- * Typecho 站点维护插件
+ * Typecho 站点维护插件（可自定义联系邮箱 + 动态实时时间）
  *
  * @package MaintenanceMode
  * @author I'm ZH
- * @version 1.1.0
+ * @version 1.1.1
  * @link http://imzh.cn/
  */
 
@@ -350,6 +350,17 @@ HTML;
     // 插件配置页面（后台）
     public static function config(Typecho_Widget_Helper_Form $form)
     {
+        // 添加版权信息块（只读，不参与保存）
+        $copyright = new Typecho_Widget_Helper_Layout('div', array(
+            'style' => 'margin-bottom: 20px; padding: 12px; background: #f9f9f9; border-left: 4px solid #467b96; font-size: 13px; line-height: 1.5;'
+        ));
+        $copyright->html('<strong>📦 插件信息</strong><br>
+                         名称：MaintenanceMode &nbsp;<b>·</b>&nbsp; 
+                         作者：I\'m ZH &nbsp;<b>·</b>&nbsp; 
+                         主页：<a href="http://imzh.cn/" target="_blank">http://imzh.cn/</a><br>
+                         💡 开启维护模式后，仅登录后台的管理员可正常访问前台，其他访客将看到美观的维护页面。');
+        $form->addItem($copyright);
+
         // 维护模式开关
         $maintenanceMode = new Typecho_Widget_Helper_Form_Element_Radio(
             'maintenanceMode',
